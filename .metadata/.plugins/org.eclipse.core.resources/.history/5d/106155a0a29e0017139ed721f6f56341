@@ -1,0 +1,42 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import java.sql.Connection;
+
+import org.junit.Test;
+
+public class CustomersDaoTest {
+
+	@Test
+	public void testBath() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetForValue() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetForList() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGet() {
+		Connection connection = null;
+
+		try {
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void testUpdate() {
+		fail("Not yet implemented");
+	}
+
+}

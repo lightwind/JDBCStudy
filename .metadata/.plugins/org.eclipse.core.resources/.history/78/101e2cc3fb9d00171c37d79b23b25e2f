@@ -1,0 +1,49 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import java.sql.Date;
+import java.util.List;
+
+import org.junit.Test;
+
+public class DAOTest {
+
+	DAO dao = new DAO();
+
+	@Test
+	public void testUpdate() {
+		String sql = "insert into customers(name, email, birth) values (?, ?, ?)";
+		dao.update(sql, "Xiaoming", "Xiaoming@qq.com", new Date(new java.util.Date().getTime()));
+	}
+
+	@Test
+	public void testGet() {
+		String sql = "select flowId, type, idCard, examCard, studentName, location, "
+				+ "grade from examstudent where FlowId = ?";
+		Student student = dao.get(Student.class, sql, 5);
+
+		System.out.println(student);
+	}
+
+	@Test
+	public void testGetForList() {
+		String sql = "select flowId, type, idCard, examCard, studentName, location, "
+				+ "grade from examstudent";
+
+		List<Student> students = dao.getForList(Student.class, sql);
+		System.out.println(students);
+	}
+
+	@Test
+	public void testGetForValue() {
+		String sql = "select examCard from examstudent where FlowId = ?";
+		String examCard = dao.getForValue(sql, 5);
+		System.out.println(examCard);
+
+		sql = "select max(grade) from examstudent";
+		int grade = dao.getForValue(sql);
+		System.out.println(grade);
+	}
+
+}

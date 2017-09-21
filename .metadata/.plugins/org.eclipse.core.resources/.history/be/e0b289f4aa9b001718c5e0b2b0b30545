@@ -1,0 +1,175 @@
+package com.light.jdbc;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.beanutils.BeanUtils;
+
+public class DAO {
+	// insert，update，delete操作都可能包含在里面
+	public void update(String sql, Object... args) {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			connection = JDBCTools.getConnection();
+			preparedStatement = connection.prepareStatement(sql);
+
+			for (int i = 0; i < args.length; i++) {
+				preparedStatement.setObject(i + 1, args[i]);
+			}
+			preparedStatement.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(null, preparedStatement, connection);
+		}
+	}
+
+	// 查询一条记录，返回对应的对象
+	public <T> T get(Class<T> clazz, String sql, Object... args) {
+		T entity = null;
+
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			// 1、得到Resultset对象
+			connection = JDBCTools.getConnection();
+			preparedStatement = connection.prepareStatement(sql);
+
+			for (int i = 0; i < args.length; i++) {
+				preparedStatement.setObject(i + 1, args[i]);
+			}
+
+			resultSet = preparedStatement.executeQuery();
+
+			// 2、得到ResultsetMateData对象
+			ResultSetMetaData data = resultSet.getMetaData();
+
+			// 3、创建Map<String, Object>对象，键：SQL查询语句的列的别名
+			// 值：；列的值
+			Map<String, Object> values = new HashMap<>();
+
+			// 4、处理结果集：利用ResultsetMateData填充3对应的Map对象
+			while (resultSet.next()) {
+				for (int i = 0; i < data.getColumnCount(); i++) {
+					String columnLabel = data.getColumnLabel(i + 1);
+					Object columnValue = resultSet.getObject(i + 1);
+					values.put(columnLabel, columnValue);
+				}
+			}
+
+			// 5、若Map不为空，利用反射创建clazz对应的对象
+			if (values.size() > 0) {
+				entity = clazz.newInstance();
+				// 6、遍历Map对象，利用反射为Class对象的对应属性赋值
+				for (Map.Entry<String, Object> entry : values.entrySet()) {
+					String propertyName = entry.getKey();
+					Object value = entry.getValue();
+
+					// 通过反射赋值
+					// ReflectionUtils.setFieldValue(entity,
+					// fieldName,fieldValue);
+					// 通过BeanUtils赋值
+					BeanUtils.setProperty(entity, propertyName, value);
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(resultSet, preparedStatement, connection);
+		}
+		return entity;
+	}
+
+	// 查询多条记录，返回对应的对象的集合
+	public <T> List<T> getForList(Class<T> clazz, String sql, Object... args) {
+
+		List<T> list = new ArrayList<>();
+
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			connection = JDBCTools.getConnection();
+			preparedStatement = connection.prepareStatement(sql);
+
+			// 填充占位符
+			for (int i = 0; i < args.length; i++) {
+				preparedStatement.setObject(i + 1, args[i]);
+			}
+
+			resultSet = preparedStatement.executeQuery();
+
+			// 前面使用一个Map对象存放一条记录，这里需要用多个Map对象存放多条记录
+			List<Map<String, Object>> values = new ArrayList<>();
+
+			List<String> columnLabels = getColumnLabels(resultSet);
+			Map<String, Object> map = null;
+			while (resultSet.next()) {
+				map = new HashMap<>();
+				for (String columnLabel; columnLabels) {
+					String columnLabel = columnLabels.get(i);
+					
+					Object value = resultSet.getObject(i + 1);
+					map.put(columnLabel, value);
+				}
+				values.add(map);
+			}
+			// 在遍历Map前，需要先遍历存放Map的集合是为空，不为空，遍历得到一个一个的Map对象，
+			T bean = null;
+			if (!values.isEmpty()) {
+				for (Map<String, Object> map1 : values) {
+					bean = clazz.newInstance();
+					for (Map.Entry<String, Object> entry : map1.entrySet()) {
+						String propertyName = entry.getKey();
+						Object value = entry.getValue();
+
+						BeanUtils.setProperty(bean, propertyName, value);
+					}
+					list.add(bean);
+				}
+			}
+			// 再把Map对象转换成Class对象
+			// 参数对应的Object对象
+			// 把Object对象放到list中。
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(resultSet, preparedStatement, connection);
+		}
+		return list;
+	}
+
+	/**
+	 * 获取结果集的ColumnLabel对应的集合List
+	 * @param resultSet
+	 * @return
+	 * @throws SQLException
+	 */
+	private List<String> getColumnLabels(ResultSet resultSet) throws SQLException {
+		List<String> labels = new ArrayList<>();
+		ResultSetMetaData data = resultSet.getMetaData();
+		for (int i = 0; i < data.getColumnCount(); i++) {
+			labels.add(data.getColumnLabel(i + 1));
+		}
+		return labels;
+	}
+
+	// 返回某条记录的某一个字段的值或一个统计的值（比如一共有多少条记录等）
+	public <E> E getForValue(String sql, Object... args) {
+		return null;
+	}
+
+}

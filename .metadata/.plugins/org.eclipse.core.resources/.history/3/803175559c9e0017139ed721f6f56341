@@ -1,0 +1,88 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.junit.Test;
+
+/**
+ * 测试DBUtils工具类
+ * @author lightwind
+ *
+ */
+public class DBUtilsTest {
+
+	class MyResultSetHandler implements ResultSetHandler {
+		@Override
+		public Object handle(ResultSet rs) throws SQLException {
+
+			List<Customers> customersList = new ArrayList<>();
+
+			while (rs.next()) {
+				Integer id = rs.getInt(1);
+				String name = rs.getString(2);
+				String email = rs.getString(3);
+				Date birth = rs.getDate(4);
+
+				Customers customers = new Customers(id, name, email, birth);
+				customersList.add(customers);
+			}
+
+			return "light";
+		}
+	}
+
+	/**
+	 * QueryRunner的query()方法的返回值取决于其ResultSetHandler参数的handle方法的返回值
+	 */
+	@Test
+	public void testQueryRunnerQuery() {
+		// 1、创建QueryRunner的实现类
+		QueryRunner queryRunner = new QueryRunner();
+
+		Connection connection = null;
+
+		try {
+			connection = JDBCTools.getConnection();
+			String sql = "select id, name, email, birth from customers";
+			Object object = queryRunner.query(connection, sql, new MyResultSetHandler());
+
+			System.out.println(object);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(null, null, connection);
+		}
+	}
+
+	/**
+	 * 测试QueryRunner类的update方法
+	 * 该方法适用于insert、update、delete
+	 */
+	@Test
+	public void testQueryRunnerUpdate() {
+		// 1、创建QueryRunner的实现类
+		QueryRunner queryRunner = new QueryRunner();
+		// 2、使用update方法
+		String sql = "delete from customers where id in (?, ?)";
+
+		Connection connection = null;
+
+		try {
+			connection = JDBCTools.getConnection();
+			queryRunner.update(connection, sql, 12, 13);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(null, null, connection);
+		}
+	}
+
+}

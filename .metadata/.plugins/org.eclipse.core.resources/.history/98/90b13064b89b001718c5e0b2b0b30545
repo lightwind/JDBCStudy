@@ -1,0 +1,23 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+
+import org.junit.Test;
+
+public class JDBCTest {
+
+	/**
+	 * 取得数据库自动生成的主键
+	 */
+	@Test
+	public void testGetKeyValue() {
+
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+
+	}
+
+}

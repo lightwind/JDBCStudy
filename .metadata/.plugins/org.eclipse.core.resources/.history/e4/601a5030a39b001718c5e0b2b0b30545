@@ -1,0 +1,14 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class BeanUtilsTest {
+
+	@Test
+	public void testsetProperty() {
+		Object object = new Student();
+		System.out.println(object);
+	}
+}

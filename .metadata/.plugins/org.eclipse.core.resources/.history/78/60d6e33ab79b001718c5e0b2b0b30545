@@ -1,0 +1,71 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.junit.Test;
+
+public class MetaDataTest {
+	/**
+	 * ResultMetaData：描述结果集的元数据。
+	 * 可以得到结果集中的基本信息：结果集中有哪些列，列名，列的别名等。
+	 */
+	@Test
+	public void testResultMetaData() {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			connection = JDBCTools.getConnection();
+			String sql = "select * from customers";
+			preparedStatement = connection.prepareStatement(sql);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(resultSet, preparedStatement, connection);
+		}
+	}
+
+	/**
+	 * DatabaseMetaData是描述数据库的元数据对象，可以由Connection得到
+	 * 了解
+	 */
+	@Test
+	public void testDatabaseMetaData() {
+		Connection connection = null;
+		ResultSet resultSet = null;
+		try {
+			connection = JDBCTools.getConnection();
+			DatabaseMetaData data = connection.getMetaData();
+
+			// 可以得到数据库本身的一些基本信息
+			// 数据库版本号
+			int version = data.getDatabaseMajorVersion();
+			System.out.println(version);
+
+			// 连接到数据库的用户名
+			String userName = data.getUserName();
+			System.out.println(userName);
+
+			// MySQL中的数据库
+			resultSet = data.getCatalogs();
+			while (resultSet.next()) {
+				System.out.println(resultSet.getString(1));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(null, null, connection);
+		}
+	}
+
+}

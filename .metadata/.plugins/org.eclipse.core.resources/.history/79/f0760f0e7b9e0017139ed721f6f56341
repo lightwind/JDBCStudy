@@ -1,0 +1,4 @@
+username = light
+password = 12345
+driverClassName = com.mysql.jdbc.Driver
+url = jdbc:mysql:///light

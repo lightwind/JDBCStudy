@@ -1,0 +1,50 @@
+package com.light.jdbc;
+
+import java.sql.Connection;
+import java.util.List;
+
+import org.apache.commons.dbutils.QueryRunner;
+
+/**
+ * 使用QueryRunner提供其具体的实现
+ * @param <T>：子类需传入的泛型类型
+ */
+public class JDBCDaoImpl<T> implements DAO<T> {
+
+	private QueryRunner queryRunner = null;
+
+	public JDBCDaoImpl() {
+		queryRunner = new QueryRunner();
+	}
+
+	@Override
+	public void bath(Connection connection, String sql, Object[]... args) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public <E> E getForValue(Connection connection, String sql, Object... args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<T> getForList(Connection connection, String sql, Object... args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public T get(Connection connection, String sql, Object... args) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void update(Connection connection, String sql, Object... args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,31 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
+import org.junit.Test;
+
+public class MetaDataTest {
+
+	/**
+	 * DatabaseMetaData是描述数据库的元数据对象，可以由Connection得到
+	 * 了解
+	 */
+	@Test
+	public void testDatabaseMetaData() {
+		try {
+			Connection connection = JDBCTools.getConnection();
+			DatabaseMetaData data = null;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(null, null, connection);
+		}
+	}
+
+}

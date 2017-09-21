@@ -1,0 +1,57 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import java.sql.Connection;
+
+import org.apache.commons.dbutils.QueryRunner;
+import org.junit.Test;
+
+import com.mysql.jdbc.JDBC4Connection;
+
+/**
+ * 测试DBUtils工具类
+ * @author lightwind
+ *
+ */
+public class DBUtilsTest {
+
+	@Test
+	public void testQueryRunnerQuery() {
+		// 1、创建QueryRunner的实现类
+		QueryRunner queryRunner = new QueryRunner();
+		Connection connection = null;
+
+		try {
+			connection = JDBCTools.getConnection();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(null, null, connection);
+		}
+	}
+
+	/**
+	 * 测试QueryRunner类的update方法
+	 * 该方法适用于insert、update、delete
+	 */
+	@Test
+	public void testQueryRunnerUpdate() {
+		// 1、创建QueryRunner的实现类
+		QueryRunner queryRunner = new QueryRunner();
+		// 2、使用update方法
+		String sql = "delete from customers where id in (?, ?)";
+
+		Connection connection = null;
+
+		try {
+			connection = JDBCTools.getConnection();
+			queryRunner.update(connection, sql, 12, 13);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			JDBCTools.releaseDB(null, null, connection);
+		}
+	}
+
+}

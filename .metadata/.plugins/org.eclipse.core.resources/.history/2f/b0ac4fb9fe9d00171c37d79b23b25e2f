@@ -1,0 +1,37 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.Test;
+
+public class JDBCTest {
+
+	/**
+	 * 使用DBCP数据库连接池
+	 * @throws SQLException 
+	 */
+	@Test
+	public void testDBCP() throws SQLException {
+		BasicDataSource dataSource=null;
+		// 1、创建DBCP数据源实例
+		dataSource = new BasicDataSource();
+		
+		// 2、为数据源实例指定必须的属性
+		dataSource.setUsername("light");
+		dataSource.setPassword("12345");
+		dataSource.setUrl("jdbc:mysql://127.0.0.1:3306/light");
+		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+		
+		// 3、从数据源中获取数据库连接
+		Connection connection = dataSource.getConnection();
+		
+		System.out.println(connection);
+	}
+
+}

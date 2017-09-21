@@ -1,0 +1,19 @@
+package com.light.jdbc;
+
+import java.sql.Connection;
+
+/**
+ * 访问数据的DAO接口
+ * 里面定义好访问数据表的各种方法
+ */
+public interface DAO {
+
+	/**
+	 * insert、update、delete
+	 * @param connection	数据库连接
+	 * @param sql	SQL语句
+	 * @param args	填充占位符的可变参数
+	 * */
+	void update(Connection connection, String sql, Object... args);
+
+}

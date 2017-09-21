@@ -1,0 +1,14 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class MetaDataTest {
+
+	@Test
+	public void testDatabaseMetaData() {
+		fail("Not yet implemented");
+	}
+
+}

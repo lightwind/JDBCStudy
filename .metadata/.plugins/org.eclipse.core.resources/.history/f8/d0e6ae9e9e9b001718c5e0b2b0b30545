@@ -1,0 +1,38 @@
+package com.light.jdbc;
+
+import static org.junit.Assert.*;
+
+import java.sql.Date;
+
+import org.junit.Test;
+
+public class DAOTest {
+
+	DAO dao = new DAO();
+
+	@Test
+	public void testUpdate() {
+		String sql = "insert into customers(name, email, birth) values (?, ?, ?)";
+		dao.update(sql, "Xiaoming", "Xiaoming@qq.com", new Date(new java.util.Date().getTime()));
+	}
+
+	@Test
+	public void testGet() {
+		String sql = "select * from flowid, type, idCard, examCard, studentName, location, "
+				+ "grade from examstudent where flowid = ?";
+		Student student = dao.get(Student.class, sql, 5);
+
+		System.out.println(student);
+	}
+
+	@Test
+	public void testGetForList() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testGetForValue() {
+		fail("Not yet implemented");
+	}
+
+}
